@@ -27,7 +27,7 @@ export default class App extends React.Component {
   postTodo = () => {
     axios.post(URL, { name: this.state.todoInput })
       .then(res => {
-        this.fetchAllTodos()
+        this.setState({ ...this.state, todos: this.state.todos.concat(res.data.data) })
         this.formReset()
       })
       .catch(this.setAxiosError)
@@ -49,7 +49,7 @@ export default class App extends React.Component {
   componentDidMount() {
     this.fetchAllTodos()
   }
-  
+
   render() {
     return (
       <div>
