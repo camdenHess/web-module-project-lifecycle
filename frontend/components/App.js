@@ -10,36 +10,46 @@ export default class App extends React.Component {
     error: '',
     todoInput: ''
   }
+
+  formReset = () => {
+    this.setState({ ...this.state, todoInput: '' })
+  }
+
+  setAxiosError = (err) => {
+    this.setState({ ...this.state, error: err.response.data.message })
+  }
+
   onChange = evt => {
     const { value } = evt.target
     this.setState({ ...this.state, todoInput: value })
   }
+
   postTodo = () => {
     axios.post(URL, { name: this.state.todoInput })
       .then(res => {
         this.fetchAllTodos()
+        this.formReset()
       })
-      .catch(err => {
-        this.setState({ ...this.state, error: err.response.data.message })
-      })
+      .catch(this.setAxiosError)
   }
+
   onSubmit = evt => {
     evt.preventDefault()
     this.postTodo()
-    this.setState({ ...this.state, todoInput: '' })
   }
+
   fetchAllTodos = () => {
     axios.get(URL)
       .then(res => {
         this.setState({ ...this.state, todos: res.data.data })
       })
-      .catch(err => {
-        this.setState({ ...this.state, error: err.response.data.message })
-      })
+      .catch(this.setAxiosError)
   }
+
   componentDidMount() {
     this.fetchAllTodos()
   }
+  
   render() {
     return (
       <div>
